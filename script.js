@@ -2,10 +2,7 @@ async function fetchWeather() {
   let searchInput = document.getElementById("search").value;
   const weatherDataSection = document.getElementById("weather-data");
   weatherDataSection.style.display = "block";
-
-  const apiKey = "29973af3e220d673278bc5e371a26bac"; // Replace this with your actual OpenWeather API key
-
-  // Check if input is empty
+  const apiKey = "29973af3e220d673278bc5e371a26bac";
   if (searchInput === "") {
     weatherDataSection.innerHTML = `
       <div>
@@ -15,16 +12,12 @@ async function fetchWeather() {
     `;
     return;
   }
-
-  // Function to get longitude and latitude
   async function getLonAndLat() {
     const geocodeURL = `https://api.openweathermap.org/geo/1.0/direct?q=${searchInput.replace(
       " ",
       "%20"
     )}&limit=1&appid=${apiKey}`;
-
     const response = await fetch(geocodeURL);
-
     if (!response.ok) {
       console.log("Bad response! ", response.status);
       weatherDataSection.innerHTML = `
@@ -35,7 +28,6 @@ async function fetchWeather() {
       `;
       return null;
     }
-
     const data = await response.json();
     if (data.length === 0) {
       weatherDataSection.innerHTML = `
@@ -46,20 +38,16 @@ async function fetchWeather() {
       `;
       return null;
     }
-    return data[0]; // Return the first result with lat/lon
+    return data[0]; 
   }
 
-  // Get latitude and longitude
   const geocodeData = await getLonAndLat();
-  if (!geocodeData) return; // Exit if geocode data is invalid
-
+  if (!geocodeData) return;
   const { lon, lat } = geocodeData;
 
   // Fetch weather data
   const weatherURL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`;
-
   const weatherResponse = await fetch(weatherURL);
-
   if (!weatherResponse.ok) {
     console.log("Bad response! ", weatherResponse.status);
     weatherDataSection.innerHTML = `
@@ -72,8 +60,6 @@ async function fetchWeather() {
   }
 
   const weatherData = await weatherResponse.json();
-
-  // Display weather data
   weatherDataSection.innerHTML = `
     <img src="https://openweathermap.org/img/wn/${weatherData.weather[0].icon}.png" 
          alt="${weatherData.weather[0].description}" width="100" />
